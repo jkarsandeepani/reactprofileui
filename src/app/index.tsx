@@ -1,98 +1,92 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+export default function ProfileScreen() {
+  const [points, setPoints] = useState(0);
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <SafeAreaView style={styles.safe} edges={['top']}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>My Profile</Text>
+      </View>
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+      <View style={styles.container}>
+        {/* Avatar */}
+        <View style={styles.avatarWrapper}>
+          <View style={styles.avatarCircle}>
+            <Image
+             source={require('../../assets/images/profile.jpg')}
+             style={styles.avatar}
+             />
+            <View style={styles.badge}>
+              <Ionicons name="checkmark" size={22} color="#00e600" />
+            </View>
+          </View>
+        </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+        <View style={styles.divider} />
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+        {/* Name */}
+        <Text style={styles.label}>Name</Text>
+        <Text style={styles.value}>Rideeka Wijegunasekar</Text>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+        {/* Email */}
+        <Text style={styles.label}>Email</Text>
+        <View style={styles.row}>
+          <Ionicons name="mail" size={20} color="#000" />
+          <Text style={styles.rowText}>rideeka2@gmail.com</Text>
+        </View>
+
+        {/* Points */}
+        <Text style={styles.label}>Points</Text>
+        <View style={styles.row}>
+          <Ionicons name="star" size={20} color="#000" />
+          <Text style={styles.rowText}>{points}</Text>
+        </View>
+
+        {/* Floating + button */}
+        <Pressable style={styles.fab} onPress={() => setPoints(points + 1)}>
+          <Ionicons name="add" size={28} color="#fff" />
+        </Pressable>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
+  safe: { flex: 1, backgroundColor: '#000' },
+  header: { backgroundColor: '#000', paddingVertical: 14, alignItems: 'center' },
+  headerTitle: { color: '#fff', fontSize: 18, fontWeight: '600' },
+  container: { flex: 1, backgroundColor: '#f5f5f5', paddingHorizontal: 16 },
+  avatarWrapper: { alignItems: 'center', marginTop: 12 },
+  avatarCircle: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
   },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  avatar: { width: 100, height: 100, borderRadius: 50 },
+  badge: { position: 'absolute', right: 8, bottom: 8 },
+  divider: { height: 2, backgroundColor: '#000', marginVertical: 12 },
+  label: { fontSize: 18, fontWeight: 'bold', marginTop: 16, marginBottom: 6 },
+  value: { fontSize: 18 },
+  row: { flexDirection: 'row', alignItems: 'center' },
+  rowText: { fontSize: 18, marginLeft: 10 },
+  fab: {
+    position: 'absolute',
+    right: 20,
+    bottom: 30,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#000',
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 6,
   },
 });
